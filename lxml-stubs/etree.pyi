@@ -10,13 +10,13 @@ from typing import (
     Iterator,
     List,
     Mapping,
-    Tuple,
-    Union,
     Optional,
     Sequence,
     Sized,
     SupportsBytes,
+    Tuple,
     TypeVar,
+    Union,
     overload,
 )
 
@@ -90,6 +90,7 @@ class _Element(Iterable["_Element"], Sized):
     def addnext(self, element: "_Element") -> None: ...
     def append(self, element: "_Element") -> None: ...
     def cssselect(self, expression: str) -> List[_Element]: ...
+    def extend(self, elements: Iterable[_Element]) -> None: ...
     def find(
         self, path: str, namespace: _OptionalNamespace = ...
     ) -> Optional["_Element"]: ...
@@ -105,6 +106,12 @@ class _Element(Iterable["_Element"], Sized):
     def getparent(self) -> Optional[_Element]: ...
     def getprevious(self) -> Optional[_Element]: ...
     def getroottree(self) -> _ElementTree: ...
+    def index(
+        self,
+        child: _Element,
+        start: Optional[int] = None,
+        stop: Optional[int] = None
+    ) -> int: ...
     def insert(self, index: int, element: _Element) -> None: ...
     def iter(
         self, tag: Optional[_AnyStr] = ..., *tags: _AnyStr
@@ -117,6 +124,7 @@ class _Element(Iterable["_Element"], Sized):
         **_extra: Any
     ) -> _Element: ...
     def remove(self, element: _Element) -> None: ...
+    def replace(self, old_element: _Element, new_element: _Element) -> None: ...
     def set(self, key: _TagName, value: _AnyStr) -> None: ...
     def xpath(
         self,
@@ -296,17 +304,27 @@ class XMLParser(_FeedParser):
     ) -> None: ...
     resolvers = ...  # type: _ResolverRegistry
 
-
 class _ResolverRegistry:
     def add(self, resolver: Resolver) -> None: ...
     def remove(self, resolver: Resolver) -> None: ...
 
-
 class Resolver:
     def resolve(self, system_url: str, public_id: str): ...
-    def resolve_file(self, f: IO[Any], context: Any, *, base_url: Optional[_AnyStr], close: bool): ...
-    def resolve_string(self, string: _AnyStr, context: Any, *, base_url: Optional[_AnyStr]): ...
-
+    def resolve_file(
+        self,
+        f: IO[Any],
+        context: Any,
+        *,
+        base_url: Optional[_AnyStr],
+        close: bool
+    ): ...
+    def resolve_string(
+        self,
+        string: _AnyStr,
+        context: Any,
+        *,
+        base_url: Optional[_AnyStr]
+    ): ...
 
 class XMLSchema:
     def __init__(
